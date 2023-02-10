@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.util.Random;
 
 class Ball {
     private final Component canvas;
