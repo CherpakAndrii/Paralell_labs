@@ -1,7 +1,7 @@
 import java.util.concurrent.locks.ReentrantLock;
 
 public class LockedCounter implements ICounter{
-    protected Integer value = 0;
+    protected int value = 0;
     ReentrantLock lock = new ReentrantLock();
     public void increment() {
         lock.lock();

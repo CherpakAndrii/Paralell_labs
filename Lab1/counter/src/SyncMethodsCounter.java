@@ -1,6 +1,6 @@
 public class SyncMethodsCounter implements ICounter
 {
-    private Integer value = 0;
+    private int value = 0;
     public synchronized void increment()
     {
         value++;

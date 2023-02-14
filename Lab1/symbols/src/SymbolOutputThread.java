@@ -1,26 +1,20 @@
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class SymbolOutputThread extends Thread {
     private final int count;
     private final char symbol;
     private final boolean expectedFlagValue;
-    private final AtomicBoolean flag;
+    private final Console console;
 
-    public SymbolOutputThread(int count, char symbol, AtomicBoolean flag, boolean flagValue) {
+    public SymbolOutputThread(int count, char symbol, boolean flagValue, Console c) {
         this.count = count;
         this.symbol = symbol;
         expectedFlagValue = flagValue;
-        this.flag = flag;
+        console = c;
     }
 
     @Override
     public synchronized void run() {
         for (int i = 0; i < count; i++) {
-            while (flag.get() != expectedFlagValue) {
-                Thread.yield();
-            }
-            System.out.print(symbol);
-            flag.set(!expectedFlagValue);
+            console.PrintSymbol(symbol, expectedFlagValue);
         }
     }
 }

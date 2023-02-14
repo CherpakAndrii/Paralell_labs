@@ -1,37 +1,48 @@
+import java.util.ArrayList;
+
 public class CountersTest {
     public static void main(String[] args) {
-        final int numberOfIterations = 10000; //Integer.MAX_VALUE-1;
-        ICounter counter = new SimpleCounter();
-        IncrementationThread incThread = new IncrementationThread(counter, numberOfIterations);
-        DecrementationThread decThread = new DecrementationThread(counter, numberOfIterations);
-        runTest(counter, incThread, decThread);
+        final int numberOfIterations = Integer.MAX_VALUE-1;
 
-        counter = new SimpleCounter();
-        incThread = new SyncBlocksIncThread(counter, numberOfIterations);
-        decThread = new SyncBlocksDecThread(counter, numberOfIterations);
-        runTest(counter, incThread, decThread);
+        ArrayList<RunCounterOperationsThread> threads = new ArrayList<>();
+        threads.add(new RunCounterOperationsThread(
+                SimpleCounter.class,
+                IncrementationThread.class,
+                DecrementationThread.class,
+                numberOfIterations,
+                "Simple counter: "));
+        threads.add(new RunCounterOperationsThread(
+                AtomicCounter.class,
+                IncrementationThread.class,
+                DecrementationThread.class,
+                numberOfIterations,
+                "Atomic counter: "));
+        threads.add(new RunCounterOperationsThread(
+                SimpleCounter.class,
+                SyncBlocksIncThread.class,
+                SyncBlocksDecThread.class,
+                numberOfIterations,
+                "Synchronized block counter: "));
+        threads.add(new RunCounterOperationsThread(
+                SyncMethodsCounter.class,
+                IncrementationThread.class,
+                DecrementationThread.class,
+                numberOfIterations,
+                "Synchronized method counter: "));
+        threads.add(new RunCounterOperationsThread(
+                LockedCounter.class,
+                IncrementationThread.class,
+                DecrementationThread.class,
+                numberOfIterations,
+                "Locked counter: "));
 
-        counter = new SyncMethodsCounter();
-        incThread = new IncrementationThread(counter, numberOfIterations);
-        decThread = new DecrementationThread(counter, numberOfIterations);
-        runTest(counter, incThread, decThread);
-
-        counter = new LockedCounter();
-        incThread = new IncrementationThread(counter, numberOfIterations);
-        decThread = new DecrementationThread(counter, numberOfIterations);
-        runTest(counter, incThread, decThread);
-    }
-
-    public static void runTest(ICounter c, IncrementationThread i, DecrementationThread d)
-    {
-        try{
-            i.start();
-            d.start();
-
-            i.join();
-            d.join();
-            System.out.println(c.getValue());
+        for (RunCounterOperationsThread t : threads) { t.start(); }
+        try
+        {
+            for (RunCounterOperationsThread t : threads) { t.join(); }
         }
-        catch (InterruptedException ignored){ }
+        catch (InterruptedException ignored){
+            System.out.println(ignored.toString());
+        }
     }
 }

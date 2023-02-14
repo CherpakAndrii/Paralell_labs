@@ -1,5 +1,5 @@
 public class SimpleCounter implements ICounter{
-    protected Integer value = 0;
+    protected int value = 0;
     public void increment() {
         value++;
     }
